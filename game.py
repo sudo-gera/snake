@@ -1,6 +1,6 @@
 import os,time,random
 term=os.get_terminal_size
-os.system('>key')
+os.system('>key.a')
 print('\n'*(term()[1]-2))
 ls=0
 q=5
@@ -88,8 +88,8 @@ while 1:
   bd=[]
   bdc=0
  bdl-=1
- nls=int(os.popen('ls -l key').read().split()[4])
- z=open('key')
+ nls=int(os.popen('ls -l key.a').read().split()[4])
+ z=open('key.a')
  z.read(ls)
  fs+=z.read(nls-ls)
  z.close()

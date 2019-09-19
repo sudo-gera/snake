@@ -14,7 +14,7 @@ os.system('python game.py &')
 inkey = _Getch()
 while 1:
     k=inkey()
-    a=open('key','a')
+    a=open('key.a','a')
     a.write(k)
     a.close()
     if k == 'p':
