@@ -10,7 +10,7 @@ class _Getch:
                 termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
             return ch
 
-os.system('python game.py &')
+os.system('python3 game.py &')
 inkey = _Getch()
 while 1:
     k=inkey()
