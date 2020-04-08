@@ -90,9 +90,9 @@ while 1:
   bdc=0
  bdl-=1
  nls=int(os.popen('ls -l key.a').read().split()[4])
- z=open('key.a')
+ z=open('key.a','rb')
  z.read(ls)
- fs+=z.read(nls-ls)
+ fs+=z.read(nls-ls).decode()
  z.close()
  ls=nls
  if fs=='\x1b[A':
@@ -174,4 +174,3 @@ while 1:
   llen+=1
  else:
   sn=sn[1:]+[[a,q]]
- #time.sleep(0.5)
