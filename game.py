@@ -1,4 +1,4 @@
-import os,time,random
+import os,time,random,sys
 term=os.get_terminal_size
 os.system('>key.a')
 print('\n'*(term()[1]-2))
@@ -7,7 +7,7 @@ q=5
 a=5
 f='d'
 lf='d'
-sn=[[5,w] for w in range(5,30)][::-1]
+sn=[[5,w] for w in range(5,70)][::-1]
 eq=random.randint(0,term()[1]*2-11)
 ea=random.randint(0,term()[0]-1)
 fc=list(range(30,38))+list(range(90,98))
@@ -29,12 +29,12 @@ llen=1
 col=0
 ons=[]
 while 1:
- time.sleep(0.01)
+ time.sleep(1/len(sys.argv[1]))
  if col==1:
   print('\x1b['+str(random.choice(fc))+';'+str(random.choice(bc))+'m')
  if col==2:
   print('\x1b[5;'+str(random.choice(fc))+';'+str(random.choice(bc))+'m')
- print('\x1b[2j\x1b[H')
+ print('\x1b[H')
  ns=sn[:]
  ns+=[[ea,eq]]
  ns+=bd
@@ -92,7 +92,8 @@ while 1:
  nls=int(os.popen('ls -l key.a').read().split()[4])
  z=open('key.a','rb')
  z.read(ls)
- fs+=z.read(nls-ls).decode()
+ nfs=z.read(nls-ls)
+ fs+=nfs.decode()
  z.close()
  ls=nls
  if fs=='\x1b[A':
@@ -140,7 +141,7 @@ while 1:
   elif f=='p':
    print('\x1b[0m')
    print('\x1b[0;0H'+' '*term()[0]*(term()[1]-2))
-   print('\x1b[2j\x1b[0;0H',end='')
+   print('\x1b[0;0H',end='')
    exit()
  if [a,q] in sn:
   sn=sn[sn.index([a,q])+1:]
