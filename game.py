@@ -29,6 +29,7 @@ llen=1
 col=0
 ons=[]
 while 1:
+ time.sleep(0.01)
  if col==1:
   print('\x1b['+str(random.choice(fc))+';'+str(random.choice(bc))+'m')
  if col==2:
