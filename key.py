@@ -1,4 +1,4 @@
-import time,sys,tty,termios,os
+import time,sys,tty,termios,os,sys
 class _Getch:
     def __call__(self):
             fd = sys.stdin.fileno()
@@ -10,7 +10,9 @@ class _Getch:
                 termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
             return ch
 
-os.system('python3 game.py &')
+p=os.path.abspath(sys.argv[0])
+p=p[:-p[::-1].index('/')]
+os.system('python3 '+p+'game.py '+sys.argv[1]+' &')
 inkey = _Getch()
 while 1:
     k=inkey()
