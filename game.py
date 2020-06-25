@@ -68,7 +68,6 @@ while 1:
    else:
     print('\x1b['+str(w[1]//2+1)+';'+str(w[0]+1)+'H ',)
  ons=ns[:]
- print('\x1b[35m',)
  oul='█'*(bdl*term()[0]//bdw)+int(bool(max(bdl,0)))*chr(9615-max(bdl,0)*term()[0]*8//bdw%8)
  oub=oue=0
  if len(loul)!=len(oul):
@@ -92,6 +91,7 @@ while 1:
   spc=128
  print('\x1b[0;0H',end='')
  spc-=1
+ print('\x1b[35m',)
  if bdc==bdm:
   bdq=random.randint(1,term()[1]*2-12)
   bda=random.randint(1,term()[0]-2)
