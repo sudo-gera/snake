@@ -1,9 +1,42 @@
-import time,sys,tty,termios,os,sys
-p=os.path.abspath(sys.argv[0])
-p=p[:-p[::-1].index('/')]
-os.system('python3 '+p+'gs.py '+sys.argv[1]+' &')
+import os,time,random,sys
+#term=os.get_terminal_size
+tca=[]
+tcc=0
+def term():
+ global tca,tcc
+ if tcc==0:
+  tca=list(os.get_terminal_size())
+  tcc=32
+ tcc-=1
+ return tca[:]
+os.system('>char')
+print('\n'*(term()[1]-2),)
+ls=0
+q=5
+a=5
+f='d'
+lf='d'
+sn=[[5,w] for w in range(5,30)][::-1]
+eq=random.randint(0,term()[1]*2-11)
+ea=random.randint(0,term()[0]-1)
+bd=[]
+bdc=0
+bdi=0
+bdl=0
+bdm=5
+bdw=200
+fs=''
+ma=0
+#aver=0
+llen=0
+ma=len(sn)
+#aver=len(sn)/1.0
+llen=1
+ons=[]
+spc=0
+lpl=[]
+loul=''
 while 1:
-<<<<<<< HEAD
  time.sleep(1/len(sys.argv[1]))
  print('\x1b[H',end='')
  ns=sn[:]
@@ -35,6 +68,7 @@ while 1:
    else:
     print('\x1b['+str(w[1]//2+1)+';'+str(w[0]+1)+'H ',)
  ons=ns[:]
+ print('\x1b[35m',)
  oul='█'*(bdl*term()[0]//bdw)+int(bool(max(bdl,0)))*chr(9615-max(bdl,0)*term()[0]*8//bdw%8)
  oub=oue=0
  if len(loul)!=len(oul):
@@ -58,7 +92,6 @@ while 1:
   spc=128
  print('\x1b[0;0H',end='')
  spc-=1
- print('\x1b[35m',)
  if bdc==bdm:
   bdq=random.randint(1,term()[1]*2-12)
   bda=random.randint(1,term()[0]-2)
@@ -165,19 +198,3 @@ while 1:
   llen+=1
  else:
   sn=sn[1:]+[[a,q]]
-=======
- fd = sys.stdin.fileno()
- old_settings = termios.tcgetattr(fd)
- try:
-  tty.setraw(sys.stdin.fileno())
-  ch = sys.stdin.read(1)
- finally:
-  termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
- k=ch
- a=open('char','a')
- a.write(k)
- a.close()
- if k == 'p':
-  time.sleep(0.1)
-  exit()
->>>>>>> 8a373fb9dab8909d19894396a27012c4bd745158
