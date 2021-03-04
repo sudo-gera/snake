@@ -1,4 +1,5 @@
 import os,time,random,sys
+delay=float(sys.argv[1])
 #term=os.get_terminal_size
 get_terminal_size_cache=[]
 get_terminal_size_counter=0
@@ -37,7 +38,7 @@ spc=0
 lpl=[]
 loul=''
 while 1:
-	time.sleep(1/len(sys.argv[1]))
+	time.sleep(1/delay)
 	print('\x1b[H',end='')
 	ns=sn[:]
 	ns+=[[ea,eq]]
