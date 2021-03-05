@@ -15,11 +15,11 @@ print('\n'*(term()[1]-2),)
 ls=0
 q=5
 a=5
-f='d'
+direction='d'
 lf='d'
-sn=[[5,w] for w in range(5,30)][::-1]
-eq=random.randint(0,term()[1]*2-11)
-ea=random.randint(0,term()[0]-1)
+snake_dots=[[5,w] for w in range(5,30)][::-1]
+small_food_y=random.randint(0,term()[1]*2-11)
+small_food_x=random.randint(0,term()[0]-1)
 bd=[]
 bdc=0
 bdi=0
@@ -27,12 +27,7 @@ bdl=0
 bdm=5
 bdw=200
 fs=''
-ma=0
-#aver=0
-llen=0
-ma=len(sn)
-#aver=len(sn)/1.0
-llen=1
+snake_len_max=len(snake_dots)
 ons=[]
 spc=0
 lpl=[]
@@ -40,8 +35,8 @@ loul=''
 while 1:
 	time.sleep(1/delay)
 	print('\x1b[H',end='')
-	ns=sn[:]
-	ns+=[[ea,eq]]
+	ns=snake_dots[:]
+	ns+=[[small_food_x,small_food_y]]
 	ns+=bd
 	pns=[w for w in ns if w not in ons]
 	mns=[w for w in ons if w not in ns]
@@ -84,10 +79,10 @@ while 1:
 		while oue>oub and oul[oue-1]==loul[oue-1]:
 			oue-=1
 		print('\x1b['+str(term()[1]-3)+';'+str(oub)+'H'+oul[oub:oue],end='')
-# print('\x1b['+str(term()[1]-2)+';0H'+'now:',len(sn),'max:',ma,'aver:',averwnd='')
-	if lpl!=[len(sn),ma] or oue!=oub:
-		print('\x1b['+str(term()[1]-2)+';0H'+'now:',len(sn),'max:',ma,)
-		lpl=[len(sn),ma]
+# print('\x1b['+str(term()[1]-2)+';0H'+'now:',len(snake_dots),'max:',snake_len_max,'aver:',averwnd='')
+	if lpl!=[len(snake_dots),snake_len_max] or oue!=oub:
+		print('\x1b['+str(term()[1]-2)+';0H'+'now:',len(snake_dots),'max:',snake_len_max,)
+		lpl=[len(snake_dots),snake_len_max]
 	if spc==0:
 		print('\x1b['+str(term()[1]-4)+';0H'+'═'*term()[0],)
 		spc=128
@@ -113,12 +108,13 @@ while 1:
 		bd=[]
 		bdc=0
 	bdl-=1
-	nls=int(os.popen('ls -l char').read().split()[4])
-	z=open('char','rb')
-	z.read(ls)
-	nfs=z.read(nls-ls)
+	#nls=int(os.popen('ls -l char').read().split()[4])
+	nls=os.path.getsize('char')
+	char=open('char','rb')
+	char.read(ls)
+	nfs=char.read(nls-ls)
 	fs+=nfs.decode()
-	z.close()
+	char.close()
 	ls=nls
 	if fs=='\x1b[A':
 		fs='w'
@@ -130,56 +126,52 @@ while 1:
 		fs='a'
 	fs=''.join([fff for fff in fs if fff in 'asdwp'])
 	if fs== '':
-		fs=f
+		fs=direction
 	if 1:
-		f=fs[0]
+		direction=fs[0]
 		fs=fs[1:]
-		if   f=='w':
+		if   direction=='w':
 			if lf == 's':
 				q+=1
 			else:
 				q-=1
-				lf=f
+				lf=direction
 			q%=term()[1]*2-10
-		elif f=='a':
+		elif direction=='a':
 			if lf == 'd':
 				a+=1
 			else:
 				a-=1
-				lf=f
+				lf=direction
 			a%=term()[0]
-		elif f=='s':
+		elif direction=='s':
 			if  lf == 'w':
 				q-=1
 			else:
 				q+=1
-				lf=f
+				lf=direction
 			q%=term()[1]*2-10
-		elif f=='d':
+		elif direction=='d':
 			if lf == 'a':
 				a-=1
 			else:
 				a+=1
-				lf=f
+				lf=direction
 			a%=term()[0]
-		elif f=='p':
+		elif direction=='p':
 			print('\x1b[0m',)
 			print('\x1b[0;0H'+' '*term()[0]*(term()[1]-2),)
 			print('\x1b[0;0H',end='')
 			exit()
-	if [a,q] in sn:
-		sn=sn[sn.index([a,q])+1:]
-		ma=max(ma,len(sn)+bdi)
-		#aver=(aver*llen+len(sn))/(llen+1)
-		llen+=1
-	if ea==a and eq==q:
+	if [a,q] in snake_dots:
+		snake_dots=snake_dots[snake_dots.index([a,q])+1:]
+		snake_len_max=max(snake_len_max,len(snake_dots)+bdi)
+	if small_food_x==a and small_food_y==q:
 		bdc+=1
-		eq=random.randint(0,term()[1]*2-11)
-		ea=random.randint(0,term()[0]-1)
-		sn=sn[:]+[[a,q]]
-		ma=max(ma,len(sn)+bdi)
-		#aver=(aver*llen+len(sn))/(llen+1)
-		llen+=1
+		small_food_y=random.randint(0,term()[1]*2-11)
+		small_food_x=random.randint(0,term()[0]-1)
+		snake_dots=snake_dots[:]+[[a,q]]
+		snake_len_max=max(snake_len_max,len(snake_dots)+bdi)
 	elif [a,q] in bd:
 		bdi=15*bdl//bdw
 		bdm=10*bdl//bdw+1
@@ -187,15 +179,11 @@ while 1:
 		bdc=0
 		bdl=0
 		bdi-=1
-		sn=sn[:]+[[a,q]]
-		ma=max(ma,len(sn)+bdi)
-		#aver=(aver*llen+len(sn))/(llen+1)
-		llen+=1
+		snake_dots=snake_dots[:]+[[a,q]]
+		snake_len_max=max(snake_len_max,len(snake_dots)+bdi)
 	elif bdi:
 		bdi-=1
-		sn=sn[:]+[[a,q]]
-		ma=max(ma,len(sn)+bdi)
-		#aver=(aver*llen+len(sn))/(llen+1)
-		llen+=1
+		snake_dots=snake_dots[:]+[[a,q]]
+		snake_len_max=max(snake_len_max,len(snake_dots)+bdi)
 	else:
-		sn=sn[1:]+[[a,q]]
+		snake_dots=snake_dots[1:]+[[a,q]]
