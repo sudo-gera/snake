@@ -1,6 +1,17 @@
 import os,time,random,sys
 delay=float(sys.argv[1])
-#term=os.get_terminal_size
+class point:
+	def __init__(s,dot):
+		s.x,s.y=dot
+	def __eq__(s,o):
+		return [s.x,s.y]==[o.x,o.y]
+	def __str__(s):
+		return f'point({s.x},{s.y})'
+	__repr__=__str__
+	def __hash__(s):
+		return hash((s.x,s.y))
+	def __iter__(s):
+		return [s.x,s.y].__iter__()
 get_terminal_size_cache=[]
 get_terminal_size_counter=0
 def term():
@@ -10,60 +21,88 @@ def term():
 		get_terminal_size_counter=32
 	get_terminal_size_counter-=1
 	return get_terminal_size_cache[:]
-os.system('>char')
+def get_land_size():
+	land_size=term()
+	land_size[1]*2-10
+	land_size=point(land_size)
+	return land_size
+dots=set()
+def move_cursor(dot):
+	print(end='\x1b['+str(dot.y//2)+';'+str(dot.x)+'H')
+def put(dot,c):
+	if bool(dot in dots)^bool(c):
+		move_cursor(point([0,0]))
+		print(dots,dot)
+		move_cursor(dot)
+		pair=dot
+		pair.y+=1-pair.y%2*2
+		#print(' ▀▄█ ▄▀█'[int(bool(dot.y%2))*4+int(bool(pair in dots))*2+int(bool(c))],end='')
+		print('01234567'[int(bool(dot.y%2))*4+int(bool(pair in dots))*2+int(bool(c))],end='\n')
+		time.sleep(0.5)
+		if c:
+			dots.add(point(dot))
+		else:
+			dots.remove(point(dot))
+open('char','w').close()
 print('\n'*(term()[1]-2),)
 ls=0
-q=5
-a=5
+head_y=5
+head_x=5
 direction='d'
-lf='d'
+last_direction='d'
 snake_dots=[[5,w] for w in range(5,30)][::-1]
 small_food_y=random.randint(0,term()[1]*2-11)
 small_food_x=random.randint(0,term()[0]-1)
-bd=[]
-bdc=0
-bdi=0
+big_food_dots=[]
+big_food_counter=0
+big_food_to_grow_from_eaten_left=0
 bdl=0
-bdm=5
+big_food_counter_max=5
 bdw=200
 fs=''
 snake_len_max=len(snake_dots)
-ons=[]
+snake_dots_old=[]
 spc=0
 lpl=[]
 loul=''
 while 1:
 	time.sleep(1/delay)
 	print('\x1b[H',end='')
-	ns=snake_dots[:]
-	ns+=[[small_food_x,small_food_y]]
-	ns+=bd
-	pns=[w for w in ns if w not in ons]
-	mns=[w for w in ons if w not in ns]
+	snake_dots_new=snake_dots[:]
+	snake_dots_new+=[[small_food_x,small_food_y]]
+	snake_dots_new+=big_food_dots
+	snake_dots_to_put=[w for w in snake_dots_new if w not in snake_dots_old]
+	snake_dots_to_del=[w for w in snake_dots_old if w not in snake_dots_new]
 	print('\x1b[33m',)
-	for w in pns:
-		if w[1]%2:
-			if [w[0],w[1]-1] in ns:
-				print('\x1b['+str(w[1]//2+1)+';'+str(w[0]+1)+'H█',)
+	if 0:
+		for w in snake_dots_to_put:
+			put(point(w),1)
+		for w in snake_dots_to_del:
+			put(point(w),0)
+	else:
+		for w in snake_dots_to_put:
+			if w[1]%2:
+				if [w[0],w[1]-1] in snake_dots_new:
+					print('\x1b['+str(w[1]//2+1)+';'+str(w[0]+1)+'H█',)
+				else:
+					print('\x1b['+str(w[1]//2+1)+';'+str(w[0]+1)+'H▄',)
 			else:
-				print('\x1b['+str(w[1]//2+1)+';'+str(w[0]+1)+'H▄',)
-		else:
-			if [w[0],w[1]+1] in ns:
-				print('\x1b['+str(w[1]//2+1)+';'+str(w[0]+1)+'H█',)
+				if [w[0],w[1]+1] in snake_dots_new:
+					print('\x1b['+str(w[1]//2+1)+';'+str(w[0]+1)+'H█',)
+				else:
+					print('\x1b['+str(w[1]//2+1)+';'+str(w[0]+1)+'H▀',)
+		for w in snake_dots_to_del:
+			if w[1]%2:
+				if [w[0],w[1]-1] in snake_dots_new:
+					print('\x1b['+str(w[1]//2+1)+';'+str(w[0]+1)+'H▀',)
+				else:
+					print('\x1b['+str(w[1]//2+1)+';'+str(w[0]+1)+'H ',)
 			else:
-				print('\x1b['+str(w[1]//2+1)+';'+str(w[0]+1)+'H▀',)
-	for w in mns:
-		if w[1]%2:
-			if [w[0],w[1]-1] in ns:
-				print('\x1b['+str(w[1]//2+1)+';'+str(w[0]+1)+'H▀',)
-			else:
-				print('\x1b['+str(w[1]//2+1)+';'+str(w[0]+1)+'H ',)
-		else:
-			if [w[0],w[1]+1] in ns:
-				print('\x1b['+str(w[1]//2+1)+';'+str(w[0]+1)+'H▄',)
-			else:
-				print('\x1b['+str(w[1]//2+1)+';'+str(w[0]+1)+'H ',)
-	ons=ns[:]
+				if [w[0],w[1]+1] in snake_dots_new:
+					print('\x1b['+str(w[1]//2+1)+';'+str(w[0]+1)+'H▄',)
+				else:
+					print('\x1b['+str(w[1]//2+1)+';'+str(w[0]+1)+'H ',)
+	snake_dots_old=snake_dots_new[:]
 	print('\x1b[35m',)
 	oul='█'*(bdl*term()[0]//bdw)+int(bool(max(bdl,0)))*chr(9615-max(bdl,0)*term()[0]*8//bdw%8)
 	oub=oue=0
@@ -88,25 +127,25 @@ while 1:
 		spc=128
 	print('\x1b[0;0H',end='')
 	spc-=1
-	if bdc==bdm:
+	if big_food_counter==big_food_counter_max:
 		bdq=random.randint(1,term()[1]*2-12)
 		bda=random.randint(1,term()[0]-2)
-		bd+=[[bda-1,bdq-1]]
-		bd+=[[bda+1,bdq-1]]
-		bd+=[[bda-1,bdq+1]]
-		bd+=[[bda+1,bdq+1]]
-		bd+=[[bda+1,bdq]]
-		bd+=[[bda-1,bdq]]
-		bd+=[[bda,bdq+1]]
-		bd+=[[bda,bdq-1]]
-		bd+=[[bda,bdq]]
-		bdc=bdm+1
+		big_food_dots+=[[bda-1,bdq-1]]
+		big_food_dots+=[[bda+1,bdq-1]]
+		big_food_dots+=[[bda-1,bdq+1]]
+		big_food_dots+=[[bda+1,bdq+1]]
+		big_food_dots+=[[bda+1,bdq]]
+		big_food_dots+=[[bda-1,bdq]]
+		big_food_dots+=[[bda,bdq+1]]
+		big_food_dots+=[[bda,bdq-1]]
+		big_food_dots+=[[bda,bdq]]
+		big_food_counter=big_food_counter_max+1
 		bdl=bdw
-	elif bdc==0:
-		bd=[]
+	elif big_food_counter==0:
+		big_food_dots=[]
 	if bdl==0:
-		bd=[]
-		bdc=0
+		big_food_dots=[]
+		big_food_counter=0
 	bdl-=1
 	#nls=int(os.popen('ls -l char').read().split()[4])
 	nls=os.path.getsize('char')
@@ -123,7 +162,7 @@ while 1:
 	if fs=='\x1b[C':
 		fs='d'
 	if fs=='\x1b[D':
-		fs='a'
+		fs='head_x'
 	fs=''.join([fff for fff in fs if fff in 'asdwp'])
 	if fs== '':
 		fs=direction
@@ -131,59 +170,59 @@ while 1:
 		direction=fs[0]
 		fs=fs[1:]
 		if   direction=='w':
-			if lf == 's':
-				q+=1
+			if last_direction == 's':
+				head_y+=1
 			else:
-				q-=1
-				lf=direction
-			q%=term()[1]*2-10
+				head_y-=1
+				last_direction=direction
+			head_y%=term()[1]*2-10
 		elif direction=='a':
-			if lf == 'd':
-				a+=1
+			if last_direction == 'd':
+				head_x+=1
 			else:
-				a-=1
-				lf=direction
-			a%=term()[0]
+				head_x-=1
+				last_direction=direction
+			head_x%=term()[0]
 		elif direction=='s':
-			if  lf == 'w':
-				q-=1
+			if  last_direction == 'w':
+				head_y-=1
 			else:
-				q+=1
-				lf=direction
-			q%=term()[1]*2-10
+				head_y+=1
+				last_direction=direction
+			head_y%=term()[1]*2-10
 		elif direction=='d':
-			if lf == 'a':
-				a-=1
+			if last_direction == 'a':
+				head_x-=1
 			else:
-				a+=1
-				lf=direction
-			a%=term()[0]
+				head_x+=1
+				last_direction=direction
+			head_x%=term()[0]
 		elif direction=='p':
 			print('\x1b[0m',)
 			print('\x1b[0;0H'+' '*term()[0]*(term()[1]-2),)
 			print('\x1b[0;0H',end='')
 			exit()
-	if [a,q] in snake_dots:
-		snake_dots=snake_dots[snake_dots.index([a,q])+1:]
-		snake_len_max=max(snake_len_max,len(snake_dots)+bdi)
-	if small_food_x==a and small_food_y==q:
-		bdc+=1
+	if [head_x,head_y] in snake_dots:
+		snake_dots=snake_dots[snake_dots.index([head_x,head_y])+1:]
+		snake_len_max=max(snake_len_max,len(snake_dots)+big_food_to_grow_from_eaten_left)
+	if small_food_x==head_x and small_food_y==head_y:
+		big_food_counter+=1
 		small_food_y=random.randint(0,term()[1]*2-11)
 		small_food_x=random.randint(0,term()[0]-1)
-		snake_dots=snake_dots[:]+[[a,q]]
-		snake_len_max=max(snake_len_max,len(snake_dots)+bdi)
-	elif [a,q] in bd:
-		bdi=15*bdl//bdw
-		bdm=10*bdl//bdw+1
-		bd=[]
-		bdc=0
+		snake_dots=snake_dots[:]+[[head_x,head_y]]
+		snake_len_max=max(snake_len_max,len(snake_dots)+big_food_to_grow_from_eaten_left)
+	elif [head_x,head_y] in big_food_dots:
+		big_food_to_grow_from_eaten_left=15*bdl//bdw
+		big_food_counter_max=10*bdl//bdw+1
+		big_food_dots=[]
+		big_food_counter=0
 		bdl=0
-		bdi-=1
-		snake_dots=snake_dots[:]+[[a,q]]
-		snake_len_max=max(snake_len_max,len(snake_dots)+bdi)
-	elif bdi:
-		bdi-=1
-		snake_dots=snake_dots[:]+[[a,q]]
-		snake_len_max=max(snake_len_max,len(snake_dots)+bdi)
+		big_food_to_grow_from_eaten_left-=1
+		snake_dots=snake_dots[:]+[[head_x,head_y]]
+		snake_len_max=max(snake_len_max,len(snake_dots)+big_food_to_grow_from_eaten_left)
+	elif big_food_to_grow_from_eaten_left:
+		big_food_to_grow_from_eaten_left-=1
+		snake_dots=snake_dots[:]+[[head_x,head_y]]
+		snake_len_max=max(snake_len_max,len(snake_dots)+big_food_to_grow_from_eaten_l)
 	else:
-		snake_dots=snake_dots[1:]+[[a,q]]
+		snake_dots=snake_dots[1:]+[[head_x,head_y]]
