@@ -223,6 +223,6 @@ while 1:
 	elif big_food_to_grow_from_eaten_left:
 		big_food_to_grow_from_eaten_left-=1
 		snake_dots=snake_dots[:]+[[head_x,head_y]]
-		snake_len_max=max(snake_len_max,len(snake_dots)+big_food_to_grow_from_eaten_l)
+		snake_len_max=max(snake_len_max,len(snake_dots)+big_food_to_grow_from_eaten_left)
 	else:
 		snake_dots=snake_dots[1:]+[[head_x,head_y]]
