@@ -7,37 +7,8 @@ from urllib.request import urlopen
 from multiprocessing import Process
 
 
-cache=''
-
-class MyServer(BaseHTTPRequestHandler):
-	def do_GET(self):
-		path=self.path
-		if path[0]=='/':
-			path=path[1:]
-		global cache
-		cache+=path
-		self.send_response(200)
-		self.send_header("Content-type", "text/html; charset=utf-8")
-		self.end_headers()
-		self.wfile.write(cache.encode())
-
-	def log_message(*a):
-			pass
-
-def runserver():
-	hostName = '127.0.0.1'
-	hostPort = 12843
-	myServer = HTTPServer((hostName, hostPort), MyServer)
-	try:
-	    myServer.serve_forever()
-	except KeyboardInterrupt:
-	    pass
-	myServer.server_close()
-
 if __name__ == '__main__':
-	rsp=Process(target=runserver)
-	rsp.start()
-	time.sleep(0.3)
+	port=int(sys.argv[2])
 	delay=float(sys.argv[1])
 	class point:
 		def __init__(s,dot):
@@ -188,7 +159,7 @@ if __name__ == '__main__':
 			big_food_counter=0
 		bdl-=1
 		#nls=int(os.popen('ls -l char').read().split()[4])
-		charfrom=urlopen('http://127.0.0.1:12843/').read()
+		charfrom=urlopen(f'http://127.0.0.1:{port}/').read()
 		charfrom=unquote(charfrom)
 		nls=len(charfrom)
 	#	char=open('char','rb')
@@ -245,7 +216,7 @@ if __name__ == '__main__':
 				print('\x1b[0m',)
 				print('\x1b[0;0H'+' '*term()[0]*(term()[1]-2),)
 				print('\x1b[0;0H',end='')
-				rsp.kill()
+				# rsp.kill()
 				exit()
 		if [head_x,head_y] in snake_dots:
 			snake_dots=snake_dots[snake_dots.index([head_x,head_y])+1:]
